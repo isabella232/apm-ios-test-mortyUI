@@ -41,7 +41,7 @@
 		100575A9229D8994000343EE /* Routable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100575A4229D8994000343EE /* Routable.swift */; };
 		1006100D23576729004EFC2C /* String+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1006100C23576729004EFC2C /* String+Hex.swift */; };
 		1008F5782350DFEF00689B2B /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1008F5772350DFEF00689B2B /* OrderedDictionary.swift */; };
-		100993D4250009AE006C7FB4 /* Trace.h in Headers */ = {isa = PBXBuildFile; fileRef = 100993BF24FFFF84006C7FB4 /* Trace.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		100993D4250009AE006C7FB4 /* Trace.h in Headers */ = {isa = PBXBuildFile; fileRef = 100993BF24FFFF84006C7FB4 /* Trace.h */; };
 		100993F92500EA9C006C7FB4 /* CrashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100993F22500EA9B006C7FB4 /* CrashController.swift */; };
 		100993FB2500EA9C006C7FB4 /* Crash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100993F42500EA9B006C7FB4 /* Crash.swift */; };
 		100993FD2500EA9C006C7FB4 /* CrashController+Testing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100993F62500EA9B006C7FB4 /* CrashController+Testing.swift */; };
