@@ -78,7 +78,7 @@ public final class CrashController: NSObject {
         
         updateUserInfo(with: resource)
         
-        DispatchQueue.global().asyncAfter(deadline: .now() + asyncDelay, execute: { [weak self] in
+        DispatchQueue.global().asyncAfter(deadline: .now() + (asyncDelay * 2), execute: { [weak self] in
             self?.scheduleNewReports()
         })
     }

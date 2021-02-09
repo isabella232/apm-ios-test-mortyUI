@@ -445,6 +445,27 @@ static int stringPrintf(char* buffer, int bufferLength, const char* fmt, ...)
     return printLength;
 }
 
+// Bitrise
+// get ivals from a subclass of NSException
+// https://github.com/kstenerud/KSCrash/pull/384/commits/d704df98505a4049bdbb8642eb07b167a4500c7c
+const struct ivar_list_t *getIvarList(const void* const classPtr)
+{
+    const struct ivar_list_t* ivars = getClassRO(classPtr)->ivars;
+    if (ivars == NULL)
+    {
+        class_t *superclass = ((class_t *)classPtr)->superclass;
+        if (superclass == NULL)
+        {
+            return NULL;
+        }
+        else
+        {
+            return getIvarList(superclass);
+        }
+    }
+
+    return ivars;
+}
 
 //======================================================================
 #pragma mark - Validation -
@@ -540,6 +561,19 @@ static bool isValidIvarType(const char* const type)
     return false;
 }
 
+static bool containsValidExtData(class_rw_t *rw)
+{
+    uintptr_t ext_ptr = rw->ro_or_rw_ext;
+    if (ext_ptr & 0x1UL) {
+        ext_ptr &= ~0x1UL;
+        struct class_rw_ext_t *rw_ext = (struct class_rw_ext_t *)ext_ptr;
+        if (!ksmem_isMemoryReadable(rw_ext, sizeof(*rw_ext))) {
+            return false;
+        }
+    }
+    return true;
+}
+
 static bool containsValidROData(const void* const classPtr)
 {
     const struct class_t* const class = classPtr;
@@ -550,6 +584,9 @@ static bool containsValidROData(const void* const classPtr)
     class_rw_t* rw = getClassRW(class);
     if(!ksmem_isMemoryReadable(rw, sizeof(*rw)))
     {
+        return false;
+    }
+    if (!containsValidExtData(rw)) {
         return false;
     }
     const class_ro_t* ro = getClassRO(class);
@@ -815,7 +852,11 @@ bool ksobjc_ivarNamed(const void* const classPtr, const char* name, KSObjCIvar* 
     {
         return false;
     }
-    const struct ivar_list_t* ivars = getClassRO(classPtr)->ivars;
+    const struct ivar_list_t* ivars = getIvarList(classPtr);
+    if (ivars == NULL)
+    {
+        return false;
+    }
     uintptr_t ivarPtr = (uintptr_t)&ivars->first;
     const struct ivar_t* ivar = (void*)ivarPtr;
     for(int i = 0; i < (int)ivars->count; i++)
@@ -855,7 +896,11 @@ bool ksobjc_ivarValue(const void* const objectPtr, int ivarIndex, void* dst)
     }
 
     const void* const classPtr = getIsaPointer(objectPtr);
-    const struct ivar_list_t* ivars = getClassRO(classPtr)->ivars;
+    const struct ivar_list_t* ivars = getIvarList(classPtr);
+    if (ivars == NULL)
+    {
+        return false;
+    }
     if(ivarIndex >= (int)ivars->count)
     {
         return false;
