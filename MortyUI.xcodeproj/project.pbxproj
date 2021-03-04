@@ -808,8 +808,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bitrise-io/trace-cocoa-sdk.git";
 			requirement = {
-				branch = restoreNetworkTracing;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.27;
 			};
 		};
 		1099E3F925BB333800A3EB7D /* XCRemoteSwiftPackageReference "Alamofire" */ = {
