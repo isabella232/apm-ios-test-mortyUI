@@ -899,7 +899,7 @@
 			repositoryURL = "https://github.com/bitrise-io/trace-cocoa-sdk.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.7.27;
+				minimumVersion = 1.7.28;
 			};
 		};
 		69F9DCFA258CB2DF00F99396 /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
