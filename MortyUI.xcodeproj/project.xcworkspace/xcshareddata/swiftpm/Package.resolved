@@ -38,6 +38,15 @@
         }
       },
       {
+        "package": "Bugsnag",
+        "repositoryURL": "https://github.com/bugsnag/bugsnag-cocoa",
+        "state": {
+          "branch": null,
+          "revision": "3196f905d5933b4a90678ca9fd755616ea89dc84",
+          "version": "6.8.0"
+        }
+      },
+      {
         "package": "CombineCocoa",
         "repositoryURL": "https://github.com/CombineCommunity/CombineCocoa.git",
         "state": {
@@ -170,6 +179,15 @@
           "branch": null,
           "revision": "afa9a1ace74e116848d4f743599ab83e584ff8cb",
           "version": "1.2.12"
+        }
+      },
+      {
+        "package": "Sentry",
+        "repositoryURL": "https://github.com/getsentry/sentry-cocoa.git",
+        "state": {
+          "branch": null,
+          "revision": "946cbb6daccedf40d652a12138f78e96f660e1ad",
+          "version": "6.2.1"
         }
       },
       {

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1002D9A825CC63E200A83E8D /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1002D9A725CC63E200A83E8D /* MoreView.swift */; };
 		10222A1825C18FCA00881344 /* bitrise_configuration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 10222A1725C18FC900881344 /* bitrise_configuration.plist */; };
+		102F31932608F1EF00998572 /* Bugsnag in Frameworks */ = {isa = PBXBuildFile; productRef = 102F31922608F1EF00998572 /* Bugsnag */; };
+		102F31A02609044900998572 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 102F319F2609044900998572 /* Sentry */; };
 		1099E3FB25BB333800A3EB7D /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 1099E3FA25BB333800A3EB7D /* Alamofire */; };
 		1099E3FF25BB335900A3EB7D /* CombineCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 1099E3FE25BB335900A3EB7D /* CombineCocoa */; };
 		1099E40325BB33B100A3EB7D /* Hero in Frameworks */ = {isa = PBXBuildFile; productRef = 1099E40225BB33B100A3EB7D /* Hero */; };
@@ -141,6 +143,8 @@
 				1099E40325BB33B100A3EB7D /* Hero in Frameworks */,
 				10B1F42D25FB7712004E417A /* FirebaseCrashlytics in Frameworks */,
 				1099E40D25BB375B00A3EB7D /* FacebookCore in Frameworks */,
+				102F31A02609044900998572 /* Sentry in Frameworks */,
+				102F31932608F1EF00998572 /* Bugsnag in Frameworks */,
 				69EF672C25A5B1E00009F5D1 /* ApolloSQLite in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -388,6 +392,8 @@
 				1099E43B25BB41F200A3EB7D /* Bitrise Trace SDK - Upload dSYM's */,
 				10B1F43725FB84C2004E417A /* Google Crashlytics */,
 				10B1F43E25FB8E31004E417A /* Fix google isses with SPM */,
+				102F31A32609074000998572 /* Sentry */,
+				102F31A826090FF800998572 /* Bugsnag */,
 			);
 			buildRules = (
 			);
@@ -407,6 +413,8 @@
 				1099E41025BB375B00A3EB7D /* FacebookLogin */,
 				10B1F42C25FB7712004E417A /* FirebaseCrashlytics */,
 				10B1F43325FB841A004E417A /* Trace */,
+				102F31922608F1EF00998572 /* Bugsnag */,
+				102F319F2609044900998572 /* Sentry */,
 			);
 			productName = MortyUI;
 			productReference = 69F9DCE7258CB21300F99396 /* MortyUI.app */;
@@ -448,6 +456,8 @@
 				1099E40925BB375B00A3EB7D /* XCRemoteSwiftPackageReference "facebook-ios-sdk" */,
 				10B1F42725FB7712004E417A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				10B1F43225FB841A004E417A /* XCRemoteSwiftPackageReference "trace-cocoa-sdk" */,
+				102F31912608F1EF00998572 /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */,
+				102F319E2609044900998572 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = 69F9DCE8258CB21300F99396 /* Products */;
 			projectDirPath = "";
@@ -483,6 +493,46 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		102F31A32609074000998572 /* Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Sentry;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which sentry-cli >/dev/null; then\nexport SENTRY_ORG=test-tc3\nexport SENTRY_PROJECT=ios\nexport SENTRY_AUTH_TOKEN=6622a91d38684d949f117dd5f37b7d729b2e58bde5c04210b085245519b046c4\nERROR=$(sentry-cli upload-dif \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		102F31A826090FF800998572 /* Bugsnag */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Bugsnag;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /usr/bin/ruby;
+			shellScript = "fork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require 'shellwords'\n\n  Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"].each do |dsym|\n    system(\"curl --http1.1 -F apiKey=62e6cd0b372ad8ad3b655a4bffa488db -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
+			showEnvVarsInLog = 0;
+		};
 		1099E43B25BB41F200A3EB7D /* Bitrise Trace SDK - Upload dSYM's */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -854,6 +904,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		102F31912608F1EF00998572 /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/bugsnag/bugsnag-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.8.0;
+			};
+		};
+		102F319E2609044900998572 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.2.1;
+			};
+		};
 		1099E3F925BB333800A3EB7D /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -921,6 +987,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		102F31922608F1EF00998572 /* Bugsnag */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 102F31912608F1EF00998572 /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */;
+			productName = Bugsnag;
+		};
+		102F319F2609044900998572 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 102F319E2609044900998572 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
 		1099E3FA25BB333800A3EB7D /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 1099E3F925BB333800A3EB7D /* XCRemoteSwiftPackageReference "Alamofire" */;
