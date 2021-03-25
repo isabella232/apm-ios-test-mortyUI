@@ -9,7 +9,7 @@ import Foundation
 
 @inline(__always)
 func fatalErrorCrash() {
-    fatalError("The app has crashed")
+    fatalError("Grouped test: The app has crashed")
 }
 
 struct Crash {
